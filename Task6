@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Todo App</title>
+
+<style>
+  :root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-color: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #94a3b8;
+    --danger: #ef4444;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    margin: 0;
+  }
+
+  .container {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  button#addBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button#addBtn:hover {
+    background-color: var(--primary-hover);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    background: var(--white);
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.1s;
+  }
+
+  li:hover {
+    transform: translateY(-1px);
+  }
+
+  .task-text {
+    cursor: pointer;
+    flex-grow: 1;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  .completed .task-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .delete-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .delete-btn:hover {
+    color: var(--danger);
+    background: #fee2e2;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Tasks</h2>
+
+  <div class="input-group">
+    <input type="text" id="taskInput" placeholder="What needs to be done?">
+    <button id="addBtn" onclick="addTask()">Add</button>
+  </div>
+
+  <ul id="taskList"></ul>
+</div>
+
+<script>
+  // ... (Your original logic remains exactly the same)
+  const input = document.getElementById("taskInput")
+  const list = document.getElementById("taskList")
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || []
+
+  function showTasks() {
+    list.innerHTML = ""
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li")
+      if (task.completed) li.classList.add("completed")
+      
+      li.innerHTML = `
+        <span class="task-text" onclick="toggleTask(${index})">${task.text}</span>
+        <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+      `
+      list.appendChild(li)
+    })
+  }
+
+  function addTask() {
+    const text = input.value
+    if (text === "") {
+      alert("Please enter a task")
+      return
+    }
+    tasks.push({ text: text, completed: false })
+    input.value = ""
+    saveTask()
+  }
+
+  function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed
+    saveTask()
+  }
+
+  function deleteTask(index) {
+    tasks.splice(index, 1)
+    saveTask()
+  }
+
+  function saveTask() {
+    localStorage.setItem("tasks", JSON.stringify(tasks))
+    showTasks()
+  }
+
+  showTasks()
+</script>
+
+</body>
+</html>
